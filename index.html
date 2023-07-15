@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Form sử dụng Bootstrap</title>
+    <!-- CSS Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>GEN MÃ QR NỘP TIỀN CHO KH</h2>
+        <div>
+            <div class="form-group">
+                <label>Số tiền Nộp: </label>
+                <input type="text" class="form-control" id="amount" oninput="formatCurrency(this)" placeholder="Nhập số tiền...">
+            </div>
+            <div class="form-group">
+                <label>Nội dung Ck</label>
+                <input type="text" class="form-control" id="NDck" oninput="removeAccents(this)"  placeholder="Nhập nội dung chuyển khoản...">
+            </div>
+            <button type="submit" onclick="getlink()" class="btn btn-primary">Gen QR</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Bootstrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+    <script>
+        function getlink() {
+            var amount = removeUnnecessaryCharacters(document.getElementById("amount").value);
+            var NDck = document.getElementById("NDck");
+            console.log(amount.value);
+            var link = 'https://api.vieqr.com/vietqr/COOPBANK/3700000000908012/' + amount + "/full.jpg?NDck=" + NDck.value + "&FullName=QUY%20TDND%20HOP%20THINH";
+            //alert(link);
+            window.location.href = link;
+        }
+        function removeUnnecessaryCharacters(input) {
+            var modifiedString = input.replace(/[^\d]/g, '');
+            return modifiedString;
+        }
+
+
+        function formatCurrency(input) {
+            // Xóa các ký tự không phải số từ chuỗi nhập vào
+            var value = input.value.replace(/\D/g, '');
+
+            // Định dạng số thành đơn vị VND
+            var formattedValue = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+
+            // Cập nhật giá trị đã định dạng vào input
+            input.value = formattedValue;
+        }
+        function removeAccents(input) {
+            var value = input.value;
+
+            // Loại bỏ dấu tiếng Việt
+            var newValue = value
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+
+            // Cập nhật giá trị đã loại bỏ dấu vào input
+            input.value = newValue;
+        }
+    </script>
+
